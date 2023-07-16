@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  db_expert:
+    image: postgres:13.0-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - db_expert_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  db_registration:
+    image: postgres:13.0-alpine
+    ports:
+      - 5433:5432
+    volumes:
+      - db_registration_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+
+  bot:
+    restart: always
+    build:
+      context: ./bot/
+    environment:
+      - EXPERT_SYSTEM_HOST=expert-system
+      - REGISTRATION_SYSTEM_HOST=registration-system
+    env_file:
+      - ./bot/.env
+
+  expert-system:
+    restart: always
+    ports:
+      - 8000:8000
+    build:
+      context: ./expert-system/
+    environment:
+      - DB_HOST=db_expert
+    env_file:
+      - ./expert-system/.env
+    depends_on:
+      - db_expert
+
+  rabbit:
+    restart: always
+    image: rabbitmq:3
+    ports:
+      - 5672:5672
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq
+
+  registration-system:
+    restart: always
+    ports:
+      - 3000:3000
+    build:
+      context: ./registration-system/
+    environment:
+      - DB_HOST=db_registration
+      - DB_PORT=5432
+      - AMQP_HOST=rabbit
+    env_file:
+      - ./registration-system/.env
+    depends_on:
+      - db_registration
+      - rabbit
+
+  worker:
+    restart: always
+    build:
+      context: ./registration-system/
+      dockerfile: celery.Dockerfile
+    volumes:
+      - ./registration-system/logs/:/app/logs/
+    environment:
+      - DB_HOST=db_registration
+      - DB_PORT=5432
+      - AMQP_HOST=rabbit
+    env_file:
+      - ./registration-system/.env
+    depends_on:
+      - registration-system
+
+  flower:
+    restart: always
+    build:
+      context: ./registration-system/
+      dockerfile: flower.Dockerfile
+    ports:
+      - 5555:5555
+    environment:
+      - AMQP_HOST=rabbit
+    env_file:
+      - ./registration-system/.env
+    depends_on:
+      - worker
+
+volumes:
+  db_expert_data:
+  db_registration_data:
+  rabbit_data:

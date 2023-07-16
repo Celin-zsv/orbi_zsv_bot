@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "bot"
+version = "0.1.0"
+description = ""
+authors = ["Анна Симанова <ani.simanova@yandex.ru>", "Никита Трофимов <ntr4@yandex.ru>"]
+readme = "README.md"
+packages = [
+    { include = "*", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pre-commit = "^3.1.1"
+aiogram = "^2.25.1"
+fastapi = "0.78.0"
+uvicorn = {version = "0.17.6", extras = ["standard"]}
+validators = "^0.20.0"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+flake8 = "^6.0.0"
+pep8-naming = "^0.13.3"
+flake8-return = "^1.2.0"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+pytest-asyncio = "^0.21.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+src_paths = ["src", "tests"]
+
+[tool.poetry.scripts]
+bot = "main:start"

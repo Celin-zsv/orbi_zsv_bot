@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "registration-system"
+version = "0.1.0"
+description = ""
+authors = ["Анна Симанова <ani.simanova@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pre-commit = "^3.1.1"
+fastapi = "0.91.0"
+taskipy = "^1.10.3"
+fastapi-mail = "^1.2.6"
+celery = "^5.2.7"
+flower = "^1.2.0"
+pytz = "^2023.3"
+sqlalchemy = "^2.0.9"
+alembic = "^1.10.3"
+asyncpg = "^0.27.0"
+pydantic = {extras = ["dotenv"], version = "^1.10.7"}
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
+structlog = "^23.1.0"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+flake8 = "^6.0.0"
+pep8-naming = "^0.13.3"
+flake8-return = "^1.2.0"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+pytest-asyncio = "^0.21.0"
+pytest-celery = "^0.0.0"
+pytest-env = "^0.8.1"
+httpx = "^0.24.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.taskipy.tasks]
+start = "uvicorn app.main:app --port 3000 --reload"
+makemigrations = 'alembic revision --autogenerate -m "First migration"'
+migrate = "alembic upgrade head"
+rabbitmq = "docker run -d --name some-rabbit -p 4369:4369 -p 5671:5671 -p 5672:5672 -p 15672:15672 rabbitmq:3"
+celery = "poetry run celery -A app.celery_worker.celery worker --loglevel=info"
+celery_windows = "poetry run celery -A app.celery_worker.celery worker --loglevel=info --pool=solo"
+flower = "poetry run celery -A app.celery_worker.celery flower"
+
+[tool.isort]
+src_paths = ["app", "tests"]

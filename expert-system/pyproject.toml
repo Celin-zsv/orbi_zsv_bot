@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "expert-system"
+version = "0.1.0"
+description = ""
+authors = ["Анна Симанова <ani.simanova@yandex.ru>", "Максим Чен <chemax29@yandex.ru>"]
+readme = "README.md"
+packages = [{include = "expert_system"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pre-commit = "^3.1.1"
+django = "^4.1.7"
+black = "^23.1.0"
+psycopg2-binary = "^2.9.5"
+python-dotenv = "^1.0.0"
+djangorestframework = "^3.14.0"
+django-tinymce = "^3.6.1"
+django-exclusivebooleanfield = "^0.3.0"
+django-structlog = "^5.1.0"
+nltk = "^3.8.1"
+pystemmer = "^2.2.0.1"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+flake8 = "^6.0.0"
+pep8-naming = "^0.13.3"
+flake8-return = "^1.2.0"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+taskipy = "^1.10.4"
+pytest = "^7.3.1"
+pytest-django = "^4.5.2"
+pytest-cov = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.taskipy.tasks]
+start = "python expert_system/manage.py runserver"
+makemigrations = "python expert_system/manage.py makemigrations"
+migrate = "python expert_system/manage.py migrate"
+createsuperuser = "python expert_system/manage.py createsuperuser"
+bot_token = "python expert_system/manage.py bot_token"
+regen_bot_token = "python expert_system/manage.py bot_token -r"
+tests = "pytest expert_system"
+tests_cov = "pytest --cov=expert_system expert_system --cov-report=html"
+download_nltk = "python -c \"import nltk;nltk.download('averaged_perceptron_tagger_ru');nltk.download('stopwords');nltk.download('wordnet');nltk.download('punkt');\""
+
+[tool.isort]
+src_paths = ["expert_system", "api", "crud", "data_handler", "users"]
