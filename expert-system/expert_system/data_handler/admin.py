@@ -55,7 +55,7 @@ class RequestAdmin(admin.ModelAdmin):
 
 
 class TextAdmin(admin.ModelAdmin):
-    list_display = ("id", "slug", "text_header", "text")
+    list_display = ("id", "slug", "text_header", "text", "is_published")
     prepopulated_fields = {"slug": ("text_header",)}
     search_fields = ("text_header",)
     list_filter = ("text_header",)

@@ -24,6 +24,11 @@ class Text(models.Model):
     text = tinymce_models.HTMLField(verbose_name="Текст", help_text="Введите текст", max_length=4096)
     button_slug = models.ManyToManyField("ButtonSlug", through="TextButtonSlug", related_name="button")
     button_url = models.ManyToManyField("ButtonUrl", through="TextButtonUrl", related_name="button")
+    is_published = models.BooleanField(
+        verbose_name="Опубликован",
+        default=True,
+        help_text="Текст опубликован /снят с публикации"
+    )
 
     class Meta:
         verbose_name = "Текст"
