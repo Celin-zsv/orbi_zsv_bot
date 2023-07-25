@@ -247,3 +247,28 @@ class UserRequest(models.Model):
 
     def __str__(self):
         return f"Запрос '{self.request}' от {self.user}"
+
+
+class TextButtonSlugArhive(models.Model):
+    """Архив моделей: текста, кнопки-на-текст, связи кнопка-текст."""
+
+    id = models.AutoField(primary_key=True)
+    button = models.PositiveIntegerField(
+        verbose_name="ButtonSlug.id: для восстановления публикации",
+        null=False
+    )
+    text = models.PositiveIntegerField(
+        verbose_name="Text.id: для восстановления публикации",
+        null=False
+    )
+    order = models.PositiveSmallIntegerField(
+        verbose_name="TextButtonSlug.order: для восстановления публикации",
+        null=True
+    )
+
+    class Meta:
+        verbose_name = "Архив моделей: Кнопка на текст"
+        verbose_name_plural = "Архив моделей: Кнопки на текст"
+
+    def __str__(self):
+        return f"{self.button} {self.text}"
